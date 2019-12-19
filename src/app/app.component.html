@@ -2,8 +2,14 @@
   <h1>Enter GitHub repo title:</h1>
   <form class="example-form">
     <mat-form-field>
-      <input matInput placeholder="Repo title">
+      <input
+        matInput
+        type="text"
+        placeholder="Repo title"
+        #searchInput
+        (keyup)="findRepo(searchInput.value)">
     </mat-form-field>
+<!--    <small *ngIf="searchInput.value < 3">smth</small>-->
   </form>
   <ul class="list">
     <li class="item">
@@ -11,7 +17,7 @@
       <p class="name"><b>Title</b></p>
       <p class="stars"><b>Stars</b></p>
     </li>
-    <li class="item" *ngFor="let ghRepo of ghRepos; let i = index">
+    <li class="item" *ngFor="let ghRepo of (ghRepos); let i = index">
       <p class="num">{{ i + 1 }}</p>
       <a class="name" href="{{ ghRepo.link }}" target="_blank">
         <span class="name">{{ ghRepo.name | titlecase}}</span>
