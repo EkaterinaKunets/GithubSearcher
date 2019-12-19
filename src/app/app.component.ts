@@ -18,6 +18,8 @@ export interface GhRepo {
 export class AppComponent {
   ghRepos: GhRepo[] = []
 
+  loading = false
+
   constructor(private http: HttpClient) {
 
   }
@@ -26,9 +28,11 @@ export class AppComponent {
     if (inputValue.length < 3) {
       return null
     }
+    this.loading = true
     this.http.get<GhRepo[]>(`https://api.github.com/search/repositories?q=${inputValue}&sort=stars`)
       .subscribe(ghRepos => {
         this.ghRepos = ghRepos.items.slice(0, 10);
+        this.loading = false
         // console.log(ghRepos.items)
       })
   }
