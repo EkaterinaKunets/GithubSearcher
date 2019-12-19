@@ -19,7 +19,7 @@
     </li>
 
     <li *ngIf="!loading else loadingBlock">
-      <div class="item" *ngFor="let ghRepo of (ghRepos); let i = index">
+      <div class="item" *ngFor="let ghRepo of (ghRepos | async); let i = index">
         <p class="num">{{ i + 1 }}</p>
         <a class="name" href="{{ ghRepo.link }}" target="_blank">
           <span class="name">{{ ghRepo.name | titlecase}}</span>

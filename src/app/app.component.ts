@@ -1,13 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs';
-
-export interface GhRepo {
-  name: string
-  stargazers_count: number
-  link: string
-  items: Array<any>
-}
+import { GhRepo } from './interfaces/gh-repo.interface'
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +11,13 @@ export interface GhRepo {
 })
 
 export class AppComponent {
-  ghRepos: GhRepo[] = []
-
+  ghRepos: Observable<any>
+  filteredRepos: Observable<any>
   loading = false
 
   constructor(private http: HttpClient) {
-
+    this.filteredRepos = this.ghRepos = this.http.get<any>(`https://api.github.com/search/repositories?q=test&sort=stars`)
+      .pipe(map(ob => ob.items.slice(0, 10)))
   }
 
   findRepo(inputValue: string) {
@@ -29,12 +25,11 @@ export class AppComponent {
       return null
     }
     this.loading = true
-    this.http.get<GhRepo[]>(`https://api.github.com/search/repositories?q=${inputValue}&sort=stars`)
-      .subscribe(ghRepos => {
-        this.ghRepos = ghRepos.items.slice(0, 10);
-        this.loading = false
-        // console.log(ghRepos.items)
-      })
+    // this.filteredRepos = this.http.get<GhRepo[]>(`https://api.github.com/search/repositories?q=${inputValue}&sort=stars`)
+    //   .subscribe(ghRepos => {
+    //     this.ghRepos = ghRepos.items.slice(0, 10);
+    //     this.loading = false
+    //   })
   }
 }
 
