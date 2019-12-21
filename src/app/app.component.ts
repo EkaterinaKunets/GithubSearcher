@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FilterReposService} from './filterRepos.service';
+import { GhRepo } from './interfaces/gh-repo.interface';
+import { Observable} from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Component({
@@ -10,7 +12,7 @@ import { map, tap } from 'rxjs/operators';
 
 export class AppComponent {
   loading = false
-  filteredRepos: Array<any>
+  filteredRepos: Observable<any>
 
   constructor(private filterReposService: FilterReposService) {}
 
@@ -22,9 +24,29 @@ export class AppComponent {
     this.loading = true
     this.filteredRepos = this.filterReposService.findRepo(inputValue)
       .pipe(
-        map(ob => ob.items.slice(0, 10)),
+        map(ob => ob.items),
         tap(() => this.loading = false)
       )
   }
 }
+
+// export class AppComponent {
+//   loading = false
+//   filteredRepos: Observable<GhRepo>
+//
+//   constructor(private filterReposService: FilterReposService) {}
+//
+//   findRepo(inputValue: string) {
+//     if (inputValue.length < 3) {
+//       console.log('im alive')
+//       return null
+//     }
+//     this.loading = true
+//     this.filteredRepos = this.filterReposService.findRepo(inputValue)
+//       .pipe(
+//         map(ob => ob.items.slice(0, 10)),
+//         tap(() => this.loading = false)
+//       )
+//   }
+// }
 
