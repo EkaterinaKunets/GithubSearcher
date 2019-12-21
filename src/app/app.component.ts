@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FilterReposService} from './filterRepos.service';
-import { GhRepo } from './interfaces/gh-repo.interface';
 import { Observable} from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
