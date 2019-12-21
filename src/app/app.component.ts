@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FilterReposService} from './filterRepos.service';
-import { GhRepo } from './interfaces/gh-repo.interface';
-import { Observable} from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, fromEvent} from 'rxjs';
+import { map, tap, debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,23 +9,20 @@ import { map, tap } from 'rxjs/operators';
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   loading = false
   filteredRepos: Observable<any>
+  @ViewChild('searchInput', {static: true}) private input: ElementRef;
 
-  constructor(private filterReposService: FilterReposService) {}
-
-  findRepo(inputValue: string) {
-    if (inputValue.length < 3) {
-      console.log('im alive')
-      return null
-    }
-    this.loading = true
-    this.filteredRepos = this.filterReposService.findRepo(inputValue)
-      .pipe(
-        map(ob => ob.items),
-        tap(() => this.loading = false)
-      )
+  constructor(private filterReposService: FilterReposService) { }
+  
+  ngOnInit() {
+    this.filteredRepos = fromEvent(this.input.nativeElement, 'keyup').pipe(
+      debounceTime(500),
+      distinctUntilChanged(), 
+      switchMap((event: any) => this.filterReposService.findRepo(event.target.value)),
+      tap(() => this.loading = true),
+    )
   }
 }
 

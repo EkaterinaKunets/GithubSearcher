@@ -6,8 +6,7 @@
         matInput
         type="text"
         placeholder="Repo title"
-        #searchInput
-        (keyup)="findRepo(searchInput.value)">
+        #searchInput>
     </mat-form-field>
 <!--    <small *ngIf="searchInput.value < 3">smth</small>-->
   </form>
@@ -18,15 +17,19 @@
       <p class="stars"><b>Stars</b></p>
     </li>
 
-    <li *ngIf="!loading else loadingBlock">
-      <div class="item" *ngFor="let ghRepo of (filteredRepos | async); let i = index">
-        <p class="num">{{ i + 1 }}</p>
-        <a class="name" href="{{ ghRepo.link }}" target="_blank">
-          <span class="name">{{ ghRepo.name | titlecase}}</span>
-        </a>
-        <p class="stars">{{ ghRepo.stargazers_count }}</p>
+
+    <li *ngIf="filteredRepos | async as items">
+      <div *ngIf="loading; else loadingBlock">
+        <div class="item" *ngFor="let ghRepo of items; let i = index">
+          <p class="num">{{ i + 1 }}</p>
+          <a class="name" href="{{ ghRepo.link }}" target="_blank">
+            <span class="name">{{ ghRepo.name | titlecase}}</span>
+          </a>
+          <p class="stars">{{ ghRepo.stargazers_count }}</p>
+        </div>
       </div>
     </li>
+
 
     <ng-template #loadingBlock>
       <div class="loader-inner">
@@ -34,6 +37,5 @@
       </div>
     </ng-template>
   </ul>
-<!--  <app-repo-list></app-repo-list>-->
 </div>
 
