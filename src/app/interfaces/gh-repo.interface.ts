@@ -1,6 +1,6 @@
 export interface GhRepo {
   name: string
   stargazers_count: number
-  link: string
+  html_url: string
   items: Array<any>
 }

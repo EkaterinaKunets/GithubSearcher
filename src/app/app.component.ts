@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FilterReposService} from './filterRepos.service';
-import { Observable, fromEvent} from 'rxjs';
-import { map, tap, debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import {Observable, fromEvent, throwError} from 'rxjs';
+import {tap, debounceTime, switchMap, distinctUntilChanged, catchError} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,37 +12,23 @@ import { map, tap, debounceTime, switchMap, distinctUntilChanged } from 'rxjs/op
 export class AppComponent implements OnInit {
   loading = false
   filteredRepos: Observable<any>
+  error = ''
   @ViewChild('searchInput', {static: true}) private input: ElementRef;
 
   constructor(private filterReposService: FilterReposService) { }
   
   ngOnInit() {
     this.filteredRepos = fromEvent(this.input.nativeElement, 'keyup').pipe(
+      tap(() => this.loading = false),
       debounceTime(500),
       distinctUntilChanged(), 
       switchMap((event: any) => this.filterReposService.findRepo(event.target.value)),
       tap(() => this.loading = true),
+      catchError(error => {
+        this.error = error.message
+        return throwError(error)
+      })
     )
   }
 }
-
-// export class AppComponent {
-//   loading = false
-//   filteredRepos: Observable<GhRepo>
-//
-//   constructor(private filterReposService: FilterReposService) {}
-//
-//   findRepo(inputValue: string) {
-//     if (inputValue.length < 3) {
-//       console.log('im alive')
-//       return null
-//     }
-//     this.loading = true
-//     this.filteredRepos = this.filterReposService.findRepo(inputValue)
-//       .pipe(
-//         map(ob => ob.items.slice(0, 10)),
-//         tap(() => this.loading = false)
-//       )
-//   }
-// }
 

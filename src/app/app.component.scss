@@ -56,10 +56,19 @@ li {
   flex-basis: 20%;
 }
 
-.loader-inner {
+.loader-inner,
+.no-value,
+.error {
+  font-size: 2em;
   width: 100%;
   height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.error {
+  text-align: center;
+  font-size: 1.3em;
+  color: #a52a35;
 }
