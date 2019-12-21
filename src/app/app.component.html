@@ -1,12 +1,15 @@
 <div class="container">
   <h1>Enter GitHub repo title:</h1>
-  <form class="example-form">
+  <form class="example-form" [formGroup]="form">
     <mat-form-field>
       <input
         matInput
         type="text"
         placeholder="Repo title"
+        formControlName="search"
         #searchInput>
+      <mat-error *ngIf="form.get('search').errors?.required">This input must be filled</mat-error>
+      <mat-error *ngIf="form.get('search').errors?.minlength">Enter more than 2 characters</mat-error>
     </mat-form-field>
   </form>
   <div class="list">
@@ -17,7 +20,6 @@
     </div>
 
     <p *ngIf="error; else searchResults" class="error">ERROR: {{error}}</p>
-    <p *ngIf="inputLength; else searchResults" class="error">Please enter more than 2 characters</p>
 
     <ng-template #searchResults>
       <div *ngIf="filteredRepos | async as items">

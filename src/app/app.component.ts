@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FilterReposService } from './filterRepos.service';
 import { Observable, fromEvent, throwError } from 'rxjs';
 import { tap, debounceTime, switchMap, distinctUntilChanged, catchError, filter } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -10,23 +11,27 @@ import { tap, debounceTime, switchMap, distinctUntilChanged, catchError, filter 
 })
 
 export class AppComponent implements OnInit {
+  form: FormGroup
   loading = false
   filteredRepos: Observable<any>
   error = ''
-  inputLength = false
   @ViewChild('searchInput', {static: true}) private input: ElementRef;
 
   constructor(private filterReposService: FilterReposService) { }
   
   ngOnInit() {
+    this.form = new FormGroup({
+      search: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3)
+      ])
+    })
+
     this.filteredRepos = fromEvent(this.input.nativeElement, 'keyup').pipe(
+      filter((event: any) => event.target.value.length > 2),
       tap(() => this.loading = false),
-      filter((event: any) => {
-        event.target.value.length > 2 ? this.inputLength = false : this.inputLength = true
-        return true
-      }),
       debounceTime(500),
-      distinctUntilChanged(), 
+      distinctUntilChanged(),
       switchMap((event: any) => this.filterReposService.findRepo(event.target.value)),
       tap(() => this.loading = true),
       catchError(error => {
