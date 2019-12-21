@@ -17,10 +17,11 @@ export class AppComponent {
 
   findRepo(inputValue: string) {
     if (inputValue.length < 3) {
+      console.log('im alive')
       return null
     }
     this.loading = true
-    console.log(this.findRepo.toString())
+    console.log(this.filterReposService.findRepo(inputValue))
     this.filterReposService.findRepo(inputValue)
       .pipe(map(ob => ob.items.slice(0, 10)))
     this.loading = false
