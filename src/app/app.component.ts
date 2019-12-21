@@ -23,7 +23,7 @@ export class AppComponent {
     this.loading = true
     this.filteredRepos = this.filterReposService.findRepo(inputValue)
       .pipe(
-        map(ob => ob.items),
+        map(ob => ob.items.slice(0, 10)),
         tap(() => this.loading = false)
       )
   }

@@ -18,21 +18,25 @@
       <p class="stars"><b>Stars</b></p>
     </li>
 
+
     <li *ngIf="filteredRepos | async as items">
-      <div class="item" *ngFor="let ghRepo of (filteredRepos | async as items); let i = index">
-        <p class="num">{{ i + 1 }}</p>
-        <a class="name" href="{{ ghRepo.link }}" target="_blank">
-          <span class="name">{{ ghRepo.name | titlecase}}</span>
-        </a>
-        <p class="stars">{{ ghRepo.stargazers_count }}</p>
+      <div *ngIf="!loading; else loadingBlock">
+        <div class="item" *ngFor="let ghRepo of items; let i = index">
+          <p class="num">{{ i + 1 }}</p>
+          <a class="name" href="{{ ghRepo.link }}" target="_blank">
+            <span class="name">{{ ghRepo.name | titlecase}}</span>
+          </a>
+          <p class="stars">{{ ghRepo.stargazers_count }}</p>
+        </div>
       </div>
     </li>
 
-<!--    <ng-template #loadingBlock>-->
-<!--      <div class="loader-inner">-->
-<!--        <mat-spinner></mat-spinner>-->
-<!--      </div>-->
-<!--    </ng-template>-->
+
+    <ng-template #loadingBlock>
+      <div class="loader-inner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-template>
   </ul>
 </div>
 
