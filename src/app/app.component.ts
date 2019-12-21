@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { FilterReposService} from './filterRepos.service';
-import {Observable, fromEvent, throwError} from 'rxjs';
-import {tap, debounceTime, switchMap, distinctUntilChanged, catchError} from 'rxjs/operators';
+import { FilterReposService } from './filterRepos.service';
+import { Observable, fromEvent, throwError } from 'rxjs';
+import { tap, debounceTime, switchMap, distinctUntilChanged, catchError, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit() {
     this.filteredRepos = fromEvent(this.input.nativeElement, 'keyup').pipe(
+      // filter(value => value.lenght >= 3),
       tap(() => this.loading = false),
       debounceTime(500),
       distinctUntilChanged(), 
