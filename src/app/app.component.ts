@@ -18,7 +18,6 @@ export class AppComponent {
 
   getEvent(value) {
     this.loading = true;
-
     this.filteredRepos$ = from(this.filterReposService.findRepo(value)).pipe(
       tap(() => this.loading = false),
       catchError(error => {
