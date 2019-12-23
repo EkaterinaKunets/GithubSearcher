@@ -1,0 +1,12 @@
+<form class="example-form" [formGroup]="form">
+  <mat-form-field>
+    <input
+      matInput
+      type="text"
+      placeholder="Repo title"
+      formControlName="search"
+      #searchInput>
+    <mat-error *ngIf="form.get('search').errors?.required">This input must be filled</mat-error>
+    <mat-error *ngIf="form.get('search').errors?.minlength">Enter more than 2 characters</mat-error>
+  </mat-form-field>
+</form>

@@ -1,17 +1,6 @@
 <div class="container">
   <h1>Enter GitHub repo title:</h1>
-  <form class="example-form" [formGroup]="form">
-    <mat-form-field>
-      <input
-        matInput
-        type="text"
-        placeholder="Repo title"
-        formControlName="search"
-        #searchInput>
-      <mat-error *ngIf="form.get('search').errors?.required">This input must be filled</mat-error>
-      <mat-error *ngIf="form.get('search').errors?.minlength">Enter more than 2 characters</mat-error>
-    </mat-form-field>
-  </form>
+  <app-search (searchInput)="getEvent($event)"></app-search>
   <div class="list">
     <div class="item">
       <p class="num"><b>№</b></p>
@@ -20,11 +9,11 @@
     </div>
 
     <p *ngIf="error; else searchResults" class="error">ERROR: {{error}}</p>
+    <div *ngIf="!loading; else loadingBlock"></div>
 
     <ng-template #searchResults>
-      <div *ngIf="filteredRepos | async as items">
-        <div *ngIf="items.length > 0; else noValue">
-          <div *ngIf="loading; else loadingBlock">
+        <div *ngIf="filteredRepos$ | async as items">
+          <div *ngIf="items.length > 0; else noValue">
             <div class="item" *ngFor="let ghRepo of items; let i = index">
               <p class="num">{{ i + 1 }}</p>
               <a class="name" href="{{ ghRepo.html_url }}" target="_blank">
@@ -34,7 +23,6 @@
             </div>
           </div>
         </div>
-      </div>
     </ng-template>
 
     <ng-template #noValue>
